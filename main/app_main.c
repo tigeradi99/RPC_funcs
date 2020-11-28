@@ -299,10 +299,10 @@ int ledcontroller_func(void *clnt, void *request)
     printf("Finished setting values. \n");
     ledc_channel_config(&ledc_channel); // PAss structure to function to initialize the channel
 
-    ledc_fade_func_install(0);// Activate the fade function.
-    ledc_set_fade_with_time(ledc_channel.speed_mode, ledc_channel.channel, 8192, 3000);
-    ledc_fade_start(ledc_channel.speed_mode, ledc_channel.channel, LEDC_FADE_NO_WAIT);
-    vTaskDelay(3000 / portTICK_PERIOD_MS);
+    // ledc_fade_func_install(0);// Activate the fade function.
+    // ledc_set_fade_with_time(ledc_channel.speed_mode, ledc_channel.channel, 8192, 3000);
+    // ledc_fade_start(ledc_channel.speed_mode, ledc_channel.channel, LEDC_FADE_NO_WAIT);
+    // vTaskDelay(3000 / portTICK_PERIOD_MS);
 
 
     toSend.response->ledc_channel_config_response->config_status = 1;

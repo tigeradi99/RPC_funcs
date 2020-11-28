@@ -35,15 +35,17 @@ def on_message(client, userdata, message):
         print("Timestamp: seconds: {} microseconds: {}".format(data_inbox.time_stamp.tv_sec , data_inbox.time_stamp.tv_usec))
         print("System time at ESP32 in seconds and microseconds: {} {}".format(data_inbox.response.gettimeofday_response.timeval.tv_sec, data_inbox.response.gettimeofday_response.timeval.tv_usec))
         print("getTime response return and errno: {} {}".format(data_inbox.response.gettimeofday_response.return_value, data_inbox.response.gettimeofday_response.errno_alt))
+        print("Press Ctrl + C to stop current loop and select y/n to send another request.")
     elif data_inbox.response.HasField("settimeofday_response"):
         print("Procedure called: settimeofday_response")
         print("Set time return value and errno: {} {}".format(data_inbox.response.settimeofday_response.return_value, data_inbox.response.settimeofday_response.errno_alt))
         print("Timestamp: seconds: {} microseconds: {}".format(data_inbox.time_stamp.tv_sec , data_inbox.time_stamp.tv_usec))
+        print("Press Ctrl + C to stop current loop and select y/n to send another request.")
     elif data_inbox.response.HasField("ledc_channel_config_response"):
         print("Procedure called: ledcontroller")
         print("Timestamp: seconds: {} microseconds: {}".format(data_inbox.time_stamp.tv_sec , data_inbox.time_stamp.tv_usec))
         if(data_inbox.response.ledc_channel_config_response.config_status == 1):
-            print("Led control achieved")
+            print("Led control achieved. Press Ctrl + C to stop current loop and select y/n to send another request.")
         else:
             print("Failed")
     else:
@@ -79,8 +81,24 @@ def rpc_sen(client, topic , procedure):
     if procedure == "ledcontrol":
         data_outbox.request.ledc_channel_config_request.ledc_conf.gpio_num = 2
         data_outbox.request.ledc_channel_config_request.ledc_conf.hpoint = 0
-        data_outbox.request.ledc_channel_config_request.ledc_conf.duty = int(input("Enter duty cycle"))
-        data_outbox.request.ledc_channel_config_request.ledc_conf.speed_mode.ledc_speed = message_in.ledc_mode_t.ledc_mode_e.LEDC_HIGH_SPEED_MODE
+        data_outbox.request.ledc_channel_config_request.ledc_conf.duty = int(input("Enter duty cycle: range(0-8191) "))
+        speed_mode = input("Enter speed mode: high/low/max ")
+        correct = True
+        while correct:
+            if speed_mode == "high":
+                data_outbox.request.ledc_channel_config_request.ledc_conf.speed_mode.ledc_speed = message_in.ledc_mode_t.ledc_mode_e.LEDC_HIGH_SPEED_MODE
+                correct = False
+            elif speed_mode == "low":
+                data_outbox.request.ledc_channel_config_request.ledc_conf.speed_mode.ledc_speed = message_in.ledc_mode_t.ledc_mode_e.LEDC_LOW_SPEED_MODE
+                correct = False
+            elif speed_mode =="max":
+                data_outbox.request.ledc_channel_config_request.ledc_conf.speed_mode.ledc_speed = message_in.ledc_mode_t.ledc_mode_e.LEDC_SPEED_MODE_MAX
+                correct = False
+            else:
+                print("Enter valid input: high/low/max")
+                correct = True
+        #data_outbox.request.ledc_channel_config_request.ledc_conf.speed_mode.ledc_speed = message_in.ledc_mode_t.ledc_mode_e.LEDC_HIGH_SPEED_MODE
+        print("Using channel 0")
         data_outbox.request.ledc_channel_config_request.ledc_conf.channel.channel = 0
         data_outbox.request.ledc_channel_config_request.ledc_conf.intr_type.intr = message_in.ledc_intr_type_t.interrupt_type.LEDC_INTR_FADE_END
         print("Message type:", data_outbox.request)
