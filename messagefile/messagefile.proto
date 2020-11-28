@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+message TimeVal {
+	uint32 tv_sec = 1;// store time elapse since Jan 1, 1970 00:00 in seconds
+	uint32 tv_usec = 2; // store time elapse since Jan 1, 1970 00:00 in microseconds
+}
+
+message SettimeofdayRequest {
+	TimeVal timeval = 1;
+}
+
+message SettimeofdayResponse {
+	sint32 return_value = 1; //stores if function call was succesful or not
+	sint32 errno = 2; //stores error no., if fault occurs
+}
+
+message GettimeofdayRequest {
+    int32 stub = 1;
+}
+
+message GettimeofdayResponse{
+	//planning to scrap timezone completely, as it is obsolete
+	message RettimeofdayRequestStatus {
+		sint32 return_value = 1;//stores if function call was succesful or not
+		sint32 errno = 2;
+	}
+	TimeVal timeval = 1;
+	RettimeofdayRequestStatus status = 2;
+}
+
+message xRPCMessage {
+	enum MessageType {
+		REQUEST = 0;
+		RESPONSE = 1;
+	}
+	MessageType message_type = 1;
+	TimeVal time_stamp = 2;
+
+	// oneof is simlar to the union structure in C
+	// the *_case variable stores the selection of which type
+	oneof RequestType { 
+		SettimeofdayRequest settimeofday_request = 3;
+		GettimeofdayRequest gettimeofday_request = 4;
+
+		SettimeofdayResponse settimeofday_response = 1003;
+		GettimeofdayResponse gettimeofday_response = 1004;
+	}
+}

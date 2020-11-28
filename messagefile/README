@@ -1,0 +1,14 @@
+compile protobuf:
+	protoc-c --c_out=. messagefile.proto
+
+fixup:
+	#include "protobuf-c.h" needs to be correct, modify if needed
+
+To compile:
+	gcc -g -o messagefile messagefile.c messagefile.pb-c.c protobuf-c.c
+	
+to run:
+	./messagefile
+
+Use gdb messagefile and set break point at the bottom to inspect values in the out_msg variable,
+	follow the pointer to see if the values are correct.
