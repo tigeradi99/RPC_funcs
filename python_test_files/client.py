@@ -26,7 +26,7 @@ def on_message(client, userdata, message):
     print("Raw Data: " ,inb)
     print("Parsing message.")
     data_inbox.ParseFromString(inb)
-    print("Data inbox: ", data_inbox)
+    #print("Data inbox: ", data_inbox)
     now = datetime.datetime.now()
     time_stamp = now.strftime("%m/%d %H:%M:%S")
     print(time_stamp, "receiving <"+ message.topic +">")
@@ -71,12 +71,12 @@ def rpc_sen(client, topic , procedure):
         data_outbox.request.settimeofday_request.timeval.CopyFrom(time_stamp_setRequest)
         print("Request to set time sent. Timeval: {} {}".format(data_outbox.request.settimeofday_request.timeval.tv_sec, 
         data_outbox.request.settimeofday_request.timeval.tv_usec ))
-        print("Message type:", data_outbox.request)
-        print("Outbox: ", data_outbox)
+        #print("Message type:", data_outbox.request)
+        #print("Outbox: ", data_outbox)
     if procedure == "gettimeofday":
         data_outbox.request.gettimeofday_request.stub = 0
-        print("Message type:", data_outbox.request)
-        print("Outbox: ", data_outbox)
+        #print("Message type:", data_outbox.request)
+        #print("Outbox: ", data_outbox)
         print("Request to get time set.")
     if procedure == "ledcontrol":
         data_outbox.request.ledc_channel_config_request.ledc_conf.gpio_num = 2
@@ -101,8 +101,8 @@ def rpc_sen(client, topic , procedure):
         print("Using channel 0")
         data_outbox.request.ledc_channel_config_request.ledc_conf.channel.channel = 0
         data_outbox.request.ledc_channel_config_request.ledc_conf.intr_type.intr = message_in.ledc_intr_type_t.interrupt_type.LEDC_INTR_FADE_END
-        print("Message type:", data_outbox.request)
-        print("Outbox: ", data_outbox)
+        #print("Message type:", data_outbox.request)
+        #print("Outbox: ", data_outbox)
     otb = data_outbox.SerializeToString()
     client.publish(topic,otb,qos=0)
 
@@ -111,7 +111,7 @@ def rpc_sen(client, topic , procedure):
 
 
 def main(client, topic):
-    print("Enter procedure: gettimeofday/settimeofday. ")
+    print("Enter procedure: gettimeofday / settimeofday / ledcontrol. ")
     procedure = input()
     rpc_sen(client, topic , procedure)
     

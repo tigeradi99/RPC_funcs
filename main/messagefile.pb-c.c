@@ -232,6 +232,96 @@ void   ledc_mode_t__free_unpacked
   assert(message->base.descriptor == &ledc_mode_t__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   i2c_operations_request__init
+                     (I2cOperationsRequest         *message)
+{
+  static const I2cOperationsRequest init_value = I2C_OPERATIONS_REQUEST__INIT;
+  *message = init_value;
+}
+size_t i2c_operations_request__get_packed_size
+                     (const I2cOperationsRequest *message)
+{
+  assert(message->base.descriptor == &i2c_operations_request__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t i2c_operations_request__pack
+                     (const I2cOperationsRequest *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &i2c_operations_request__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t i2c_operations_request__pack_to_buffer
+                     (const I2cOperationsRequest *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &i2c_operations_request__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+I2cOperationsRequest *
+       i2c_operations_request__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (I2cOperationsRequest *)
+     protobuf_c_message_unpack (&i2c_operations_request__descriptor,
+                                allocator, len, data);
+}
+void   i2c_operations_request__free_unpacked
+                     (I2cOperationsRequest *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &i2c_operations_request__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   i2c_operations_response__init
+                     (I2cOperationsResponse         *message)
+{
+  static const I2cOperationsResponse init_value = I2C_OPERATIONS_RESPONSE__INIT;
+  *message = init_value;
+}
+size_t i2c_operations_response__get_packed_size
+                     (const I2cOperationsResponse *message)
+{
+  assert(message->base.descriptor == &i2c_operations_response__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t i2c_operations_response__pack
+                     (const I2cOperationsResponse *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &i2c_operations_response__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t i2c_operations_response__pack_to_buffer
+                     (const I2cOperationsResponse *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &i2c_operations_response__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+I2cOperationsResponse *
+       i2c_operations_response__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (I2cOperationsResponse *)
+     protobuf_c_message_unpack (&i2c_operations_response__descriptor,
+                                allocator, len, data);
+}
+void   i2c_operations_response__free_unpacked
+                     (I2cOperationsResponse *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &i2c_operations_response__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 void   settimeofday_request__init
                      (SettimeofdayRequest         *message)
 {
@@ -963,6 +1053,147 @@ const ProtobufCMessageDescriptor ledc_mode_t__descriptor =
   (ProtobufCMessageInit) ledc_mode_t__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
+static const ProtobufCFieldDescriptor i2c_operations_request__field_descriptors[6] =
+{
+  {
+    "master_sda_gpio",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(I2cOperationsRequest, master_sda_gpio),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "master_scl_gpio",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(I2cOperationsRequest, master_scl_gpio),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "clock_speed",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(I2cOperationsRequest, clock_speed),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "slave_addr",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(I2cOperationsRequest, slave_addr),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "slave_sda_gpio",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(I2cOperationsRequest, slave_sda_gpio),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "slave_scl_gpio",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(I2cOperationsRequest, slave_scl_gpio),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned i2c_operations_request__field_indices_by_name[] = {
+  2,   /* field[2] = clock_speed */
+  1,   /* field[1] = master_scl_gpio */
+  0,   /* field[0] = master_sda_gpio */
+  3,   /* field[3] = slave_addr */
+  5,   /* field[5] = slave_scl_gpio */
+  4,   /* field[4] = slave_sda_gpio */
+};
+static const ProtobufCIntRange i2c_operations_request__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 6 }
+};
+const ProtobufCMessageDescriptor i2c_operations_request__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "i2cOperationsRequest",
+  "I2cOperationsRequest",
+  "I2cOperationsRequest",
+  "",
+  sizeof(I2cOperationsRequest),
+  6,
+  i2c_operations_request__field_descriptors,
+  i2c_operations_request__field_indices_by_name,
+  1,  i2c_operations_request__number_ranges,
+  (ProtobufCMessageInit) i2c_operations_request__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor i2c_operations_response__field_descriptors[1] =
+{
+  {
+    "success",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(I2cOperationsResponse, success),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned i2c_operations_response__field_indices_by_name[] = {
+  0,   /* field[0] = success */
+};
+static const ProtobufCIntRange i2c_operations_response__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor i2c_operations_response__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "i2cOperationsResponse",
+  "I2cOperationsResponse",
+  "I2cOperationsResponse",
+  "",
+  sizeof(I2cOperationsResponse),
+  1,
+  i2c_operations_response__field_descriptors,
+  i2c_operations_response__field_indices_by_name,
+  1,  i2c_operations_response__number_ranges,
+  (ProtobufCMessageInit) i2c_operations_response__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
 static const ProtobufCFieldDescriptor settimeofday_request__field_descriptors[1] =
 {
   {
@@ -1230,7 +1461,7 @@ const ProtobufCMessageDescriptor ledc_channel_config__response__descriptor =
   (ProtobufCMessageInit) ledc_channel_config__response__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor request__field_descriptors[3] =
+static const ProtobufCFieldDescriptor request__field_descriptors[4] =
 {
   {
     "settimeofday_request",
@@ -1268,16 +1499,29 @@ static const ProtobufCFieldDescriptor request__field_descriptors[3] =
     0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "i2c_request",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Request, request_func_case),
+    offsetof(Request, i2c_request),
+    &i2c_operations_request__descriptor,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned request__field_indices_by_name[] = {
   1,   /* field[1] = gettimeofday_request */
+  3,   /* field[3] = i2c_request */
   2,   /* field[2] = ledc_channel_config_request */
   0,   /* field[0] = settimeofday_request */
 };
 static const ProtobufCIntRange request__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 4 }
 };
 const ProtobufCMessageDescriptor request__descriptor =
 {
@@ -1287,14 +1531,14 @@ const ProtobufCMessageDescriptor request__descriptor =
   "Request",
   "",
   sizeof(Request),
-  3,
+  4,
   request__field_descriptors,
   request__field_indices_by_name,
   1,  request__number_ranges,
   (ProtobufCMessageInit) request__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor response__field_descriptors[3] =
+static const ProtobufCFieldDescriptor response__field_descriptors[4] =
 {
   {
     "settimeofday_response",
@@ -1332,16 +1576,29 @@ static const ProtobufCFieldDescriptor response__field_descriptors[3] =
     0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "i2c_response",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Response, response_func_case),
+    offsetof(Response, i2c_response),
+    &i2c_operations_response__descriptor,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned response__field_indices_by_name[] = {
   1,   /* field[1] = gettimeofday_response */
+  3,   /* field[3] = i2c_response */
   2,   /* field[2] = ledc_channel_config_response */
   0,   /* field[0] = settimeofday_response */
 };
 static const ProtobufCIntRange response__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 4 }
 };
 const ProtobufCMessageDescriptor response__descriptor =
 {
@@ -1351,7 +1608,7 @@ const ProtobufCMessageDescriptor response__descriptor =
   "Response",
   "",
   sizeof(Response),
-  3,
+  4,
   response__field_descriptors,
   response__field_indices_by_name,
   1,  response__number_ranges,

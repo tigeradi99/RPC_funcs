@@ -20,6 +20,8 @@ typedef struct _LedcChannelConfigT LedcChannelConfigT;
 typedef struct _LedcIntrTypeT LedcIntrTypeT;
 typedef struct _LedcChannelT LedcChannelT;
 typedef struct _LedcModeT LedcModeT;
+typedef struct _I2cOperationsRequest I2cOperationsRequest;
+typedef struct _I2cOperationsResponse I2cOperationsResponse;
 typedef struct _SettimeofdayRequest SettimeofdayRequest;
 typedef struct _SettimeofdayResponse SettimeofdayResponse;
 typedef struct _GettimeofdayRequest GettimeofdayRequest;
@@ -109,6 +111,31 @@ struct  _LedcModeT
     , LEDC_MODE_T__LEDC_MODE_E__LEDC_HIGH_SPEED_MODE }
 
 
+struct  _I2cOperationsRequest
+{
+  ProtobufCMessage base;
+  int32_t master_sda_gpio;
+  int32_t master_scl_gpio;
+  int32_t clock_speed;
+  int32_t slave_addr;
+  int32_t slave_sda_gpio;
+  int32_t slave_scl_gpio;
+};
+#define I2C_OPERATIONS_REQUEST__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&i2c_operations_request__descriptor) \
+    , 0, 0, 0, 0, 0, 0 }
+
+
+struct  _I2cOperationsResponse
+{
+  ProtobufCMessage base;
+  int32_t success;
+};
+#define I2C_OPERATIONS_RESPONSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&i2c_operations_response__descriptor) \
+    , 0 }
+
+
 struct  _SettimeofdayRequest
 {
   ProtobufCMessage base;
@@ -188,7 +215,8 @@ typedef enum {
   REQUEST__REQUEST_FUNC__NOT_SET = 0,
   REQUEST__REQUEST_FUNC_SETTIMEOFDAY_REQUEST = 1,
   REQUEST__REQUEST_FUNC_GETTIMEOFDAY_REQUEST = 2,
-  REQUEST__REQUEST_FUNC_LEDC_CHANNEL_CONFIG_REQUEST = 3
+  REQUEST__REQUEST_FUNC_LEDC_CHANNEL_CONFIG_REQUEST = 3,
+  REQUEST__REQUEST_FUNC_I2C_REQUEST = 4
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(REQUEST__REQUEST_FUNC)
 } Request__RequestFuncCase;
 
@@ -200,6 +228,7 @@ struct  _Request
     SettimeofdayRequest *settimeofday_request;
     GettimeofdayRequest *gettimeofday_request;
     LedcChannelConfigRequest *ledc_channel_config_request;
+    I2cOperationsRequest *i2c_request;
   };
 };
 #define REQUEST__INIT \
@@ -211,7 +240,8 @@ typedef enum {
   RESPONSE__RESPONSE_FUNC__NOT_SET = 0,
   RESPONSE__RESPONSE_FUNC_SETTIMEOFDAY_RESPONSE = 1,
   RESPONSE__RESPONSE_FUNC_GETTIMEOFDAY_RESPONSE = 2,
-  RESPONSE__RESPONSE_FUNC_LEDC_CHANNEL_CONFIG_RESPONSE = 3
+  RESPONSE__RESPONSE_FUNC_LEDC_CHANNEL_CONFIG_RESPONSE = 3,
+  RESPONSE__RESPONSE_FUNC_I2C_RESPONSE = 4
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(RESPONSE__RESPONSE_FUNC)
 } Response__ResponseFuncCase;
 
@@ -223,6 +253,7 @@ struct  _Response
     SettimeofdayResponse *settimeofday_response;
     GettimeofdayResponse *gettimeofday_response;
     LedcChannelConfigResponse *ledc_channel_config_response;
+    I2cOperationsResponse *i2c_response;
   };
 };
 #define RESPONSE__INIT \
@@ -346,6 +377,44 @@ LedcModeT *
                       const uint8_t       *data);
 void   ledc_mode_t__free_unpacked
                      (LedcModeT *message,
+                      ProtobufCAllocator *allocator);
+/* I2cOperationsRequest methods */
+void   i2c_operations_request__init
+                     (I2cOperationsRequest         *message);
+size_t i2c_operations_request__get_packed_size
+                     (const I2cOperationsRequest   *message);
+size_t i2c_operations_request__pack
+                     (const I2cOperationsRequest   *message,
+                      uint8_t             *out);
+size_t i2c_operations_request__pack_to_buffer
+                     (const I2cOperationsRequest   *message,
+                      ProtobufCBuffer     *buffer);
+I2cOperationsRequest *
+       i2c_operations_request__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   i2c_operations_request__free_unpacked
+                     (I2cOperationsRequest *message,
+                      ProtobufCAllocator *allocator);
+/* I2cOperationsResponse methods */
+void   i2c_operations_response__init
+                     (I2cOperationsResponse         *message);
+size_t i2c_operations_response__get_packed_size
+                     (const I2cOperationsResponse   *message);
+size_t i2c_operations_response__pack
+                     (const I2cOperationsResponse   *message,
+                      uint8_t             *out);
+size_t i2c_operations_response__pack_to_buffer
+                     (const I2cOperationsResponse   *message,
+                      ProtobufCBuffer     *buffer);
+I2cOperationsResponse *
+       i2c_operations_response__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   i2c_operations_response__free_unpacked
+                     (I2cOperationsResponse *message,
                       ProtobufCAllocator *allocator);
 /* SettimeofdayRequest methods */
 void   settimeofday_request__init
@@ -535,6 +604,12 @@ typedef void (*LedcChannelT_Closure)
 typedef void (*LedcModeT_Closure)
                  (const LedcModeT *message,
                   void *closure_data);
+typedef void (*I2cOperationsRequest_Closure)
+                 (const I2cOperationsRequest *message,
+                  void *closure_data);
+typedef void (*I2cOperationsResponse_Closure)
+                 (const I2cOperationsResponse *message,
+                  void *closure_data);
 typedef void (*SettimeofdayRequest_Closure)
                  (const SettimeofdayRequest *message,
                   void *closure_data);
@@ -575,6 +650,8 @@ extern const ProtobufCEnumDescriptor    ledc_intr_type_t__interrupt_type__descri
 extern const ProtobufCMessageDescriptor ledc_channel_t__descriptor;
 extern const ProtobufCMessageDescriptor ledc_mode_t__descriptor;
 extern const ProtobufCEnumDescriptor    ledc_mode_t__ledc_mode_e__descriptor;
+extern const ProtobufCMessageDescriptor i2c_operations_request__descriptor;
+extern const ProtobufCMessageDescriptor i2c_operations_response__descriptor;
 extern const ProtobufCMessageDescriptor settimeofday_request__descriptor;
 extern const ProtobufCMessageDescriptor settimeofday_response__descriptor;
 extern const ProtobufCMessageDescriptor gettimeofday_request__descriptor;

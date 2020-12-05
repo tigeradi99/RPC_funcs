@@ -201,7 +201,7 @@ int ledcontroller_func(void *clnt, void *request)
     *    
     *    uint32_t tv_usec;
     *}; 
-    * After that, the gettimeofday function is called; and we pass the reference of the earlier defined structure to get the time.
+    * After that, the gettimeofday function is called; and we pass the reference of the structure defined earlier (timeval tv) to get the time.
     */
     TimeVal time_st;
     toSend.time_stamp = &time_st;
@@ -320,6 +320,11 @@ int ledcontroller_func(void *clnt, void *request)
     return 0;
 }
 
+int test_i2c_rw_func(void *clnt, void *request)
+{
+    return 0;
+}
+
 int func0(void *clnt , void *request)
 {
     printf("Invalid type");
@@ -331,7 +336,8 @@ static pf xRPC_func[] = {
     func0,
     settimeofday_func, 
     gettimeofday_func,
-    ledcontroller_func};
+    ledcontroller_func,
+    test_i2c_rw_func};
 
 
 
