@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='messagefile.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x11messagefile.proto\"*\n\x07TimeVal\x12\x0e\n\x06tv_sec\x18\x01 \x01(\r\x12\x0f\n\x07tv_usec\x18\x02 \x01(\r\"\xb1\x01\n\x15ledc_channel_config_t\x12\x10\n\x08gpio_num\x18\x01 \x01(\x05\x12 \n\nspeed_mode\x18\x02 \x01(\x0b\x32\x0c.ledc_mode_t\x12 \n\x07\x63hannel\x18\x03 \x01(\x0b\x32\x0f.ledc_channel_t\x12$\n\tintr_type\x18\x04 \x01(\x0b\x32\x11.ledc_intr_type_t\x12\x0c\n\x04\x64uty\x18\x05 \x01(\r\x12\x0e\n\x06hpoint\x18\x06 \x01(\x05\"\x83\x01\n\x10ledc_intr_type_t\x12.\n\x04intr\x18\x01 \x01(\x0e\x32 .ledc_intr_type_t.interrupt_type\"?\n\x0einterrupt_type\x12\x15\n\x11LEDC_INTR_DISABLE\x10\x00\x12\x16\n\x12LEDC_INTR_FADE_END\x10\x01\"!\n\x0eledc_channel_t\x12\x0f\n\x07\x63hannel\x18\x01 \x01(\x05\"\x96\x01\n\x0bledc_mode_t\x12,\n\nledc_speed\x18\x01 \x01(\x0e\x32\x18.ledc_mode_t.ledc_mode_e\"Y\n\x0bledc_mode_e\x12\x18\n\x14LEDC_HIGH_SPEED_MODE\x10\x00\x12\x17\n\x13LEDC_LOW_SPEED_MODE\x10\x01\x12\x17\n\x13LEDC_SPEED_MODE_MAX\x10\x02\"0\n\x13SettimeofdayRequest\x12\x19\n\x07timeval\x18\x01 \x01(\x0b\x32\x08.TimeVal\"?\n\x14SettimeofdayResponse\x12\x14\n\x0creturn_value\x18\x01 \x01(\x11\x12\x11\n\terrno_alt\x18\x02 \x01(\x11\"#\n\x13GettimeofdayRequest\x12\x0c\n\x04stub\x18\x01 \x01(\x05\"Z\n\x14GettimeofdayResponse\x12\x14\n\x0creturn_value\x18\x01 \x01(\x11\x12\x11\n\terrno_alt\x18\x02 \x01(\x11\x12\x19\n\x07timeval\x18\x03 \x01(\x0b\x32\x08.TimeVal\"H\n\x1bledc_channel_config_Request\x12)\n\tledc_conf\x18\x01 \x01(\x0b\x32\x16.ledc_channel_config_t\"5\n\x1cledc_channel_config_Response\x12\x15\n\rconfig_status\x18\x01 \x01(\x05\"\xc9\x01\n\x07Request\x12\x34\n\x14settimeofday_request\x18\x01 \x01(\x0b\x32\x14.SettimeofdayRequestH\x00\x12\x34\n\x14gettimeofday_request\x18\x02 \x01(\x0b\x32\x14.GettimeofdayRequestH\x00\x12\x43\n\x1bledc_channel_config_request\x18\x03 \x01(\x0b\x32\x1c.ledc_channel_config_RequestH\x00\x42\r\n\x0bRequestFunc\"\xd1\x01\n\x08Response\x12\x36\n\x15settimeofday_response\x18\x01 \x01(\x0b\x32\x15.SettimeofdayResponseH\x00\x12\x36\n\x15gettimeofday_response\x18\x02 \x01(\x0b\x32\x15.GettimeofdayResponseH\x00\x12\x45\n\x1cledc_channel_config_response\x18\x03 \x01(\x0b\x32\x1d.ledc_channel_config_ResponseH\x00\x42\x0e\n\x0cResponseFunc\"v\n\x0bxRPCMessage\x12\x1b\n\x07request\x18\x01 \x01(\x0b\x32\x08.RequestH\x00\x12\x1d\n\x08response\x18\x02 \x01(\x0b\x32\t.ResponseH\x00\x12\x1c\n\ntime_stamp\x18\x03 \x01(\x0b\x32\x08.TimeValB\r\n\x0bMessageTypeb\x06proto3')
+  serialized_pb=_b('\n\x11messagefile.proto\"*\n\x07TimeVal\x12\x0e\n\x06tv_sec\x18\x01 \x01(\r\x12\x0f\n\x07tv_usec\x18\x02 \x01(\r\"\xb1\x01\n\x15ledc_channel_config_t\x12\x10\n\x08gpio_num\x18\x01 \x01(\x05\x12 \n\nspeed_mode\x18\x02 \x01(\x0b\x32\x0c.ledc_mode_t\x12 \n\x07\x63hannel\x18\x03 \x01(\x0b\x32\x0f.ledc_channel_t\x12$\n\tintr_type\x18\x04 \x01(\x0b\x32\x11.ledc_intr_type_t\x12\x0c\n\x04\x64uty\x18\x05 \x01(\r\x12\x0e\n\x06hpoint\x18\x06 \x01(\x05\"\x83\x01\n\x10ledc_intr_type_t\x12.\n\x04intr\x18\x01 \x01(\x0e\x32 .ledc_intr_type_t.interrupt_type\"?\n\x0einterrupt_type\x12\x15\n\x11LEDC_INTR_DISABLE\x10\x00\x12\x16\n\x12LEDC_INTR_FADE_END\x10\x01\"!\n\x0eledc_channel_t\x12\x0f\n\x07\x63hannel\x18\x01 \x01(\x05\"\x96\x01\n\x0bledc_mode_t\x12,\n\nledc_speed\x18\x01 \x01(\x0e\x32\x18.ledc_mode_t.ledc_mode_e\"Y\n\x0bledc_mode_e\x12\x18\n\x14LEDC_HIGH_SPEED_MODE\x10\x00\x12\x17\n\x13LEDC_LOW_SPEED_MODE\x10\x01\x12\x17\n\x13LEDC_SPEED_MODE_MAX\x10\x02\"\xa1\x01\n\x14i2cOperationsRequest\x12\x17\n\x0fmaster_sda_gpio\x18\x01 \x01(\x05\x12\x17\n\x0fmaster_scl_gpio\x18\x02 \x01(\x05\x12\x13\n\x0b\x63lock_speed\x18\x03 \x01(\x05\x12\x12\n\nslave_addr\x18\x04 \x01(\x05\x12\x16\n\x0eslave_sda_gpio\x18\x05 \x01(\x05\x12\x16\n\x0eslave_scl_gpio\x18\x06 \x01(\x05\"(\n\x15i2cOperationsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x05\"0\n\x13SettimeofdayRequest\x12\x19\n\x07timeval\x18\x01 \x01(\x0b\x32\x08.TimeVal\"?\n\x14SettimeofdayResponse\x12\x14\n\x0creturn_value\x18\x01 \x01(\x11\x12\x11\n\terrno_alt\x18\x02 \x01(\x11\"#\n\x13GettimeofdayRequest\x12\x0c\n\x04stub\x18\x01 \x01(\x05\"Z\n\x14GettimeofdayResponse\x12\x14\n\x0creturn_value\x18\x01 \x01(\x11\x12\x11\n\terrno_alt\x18\x02 \x01(\x11\x12\x19\n\x07timeval\x18\x03 \x01(\x0b\x32\x08.TimeVal\"H\n\x1bledc_channel_config_Request\x12)\n\tledc_conf\x18\x01 \x01(\x0b\x32\x16.ledc_channel_config_t\"5\n\x1cledc_channel_config_Response\x12\x15\n\rconfig_status\x18\x01 \x01(\x05\"\xf7\x01\n\x07Request\x12\x34\n\x14settimeofday_request\x18\x01 \x01(\x0b\x32\x14.SettimeofdayRequestH\x00\x12\x34\n\x14gettimeofday_request\x18\x02 \x01(\x0b\x32\x14.GettimeofdayRequestH\x00\x12\x43\n\x1bledc_channel_config_request\x18\x03 \x01(\x0b\x32\x1c.ledc_channel_config_RequestH\x00\x12,\n\x0bi2c_request\x18\x04 \x01(\x0b\x32\x15.i2cOperationsRequestH\x00\x42\r\n\x0bRequestFunc\"\x81\x02\n\x08Response\x12\x36\n\x15settimeofday_response\x18\x01 \x01(\x0b\x32\x15.SettimeofdayResponseH\x00\x12\x36\n\x15gettimeofday_response\x18\x02 \x01(\x0b\x32\x15.GettimeofdayResponseH\x00\x12\x45\n\x1cledc_channel_config_response\x18\x03 \x01(\x0b\x32\x1d.ledc_channel_config_ResponseH\x00\x12.\n\x0ci2c_response\x18\x04 \x01(\x0b\x32\x16.i2cOperationsResponseH\x00\x42\x0e\n\x0cResponseFunc\"v\n\x0bxRPCMessage\x12\x1b\n\x07request\x18\x01 \x01(\x0b\x32\x08.RequestH\x00\x12\x1d\n\x08response\x18\x02 \x01(\x0b\x32\t.ResponseH\x00\x12\x1c\n\ntime_stamp\x18\x03 \x01(\x0b\x32\x08.TimeValB\r\n\x0bMessageTypeb\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -273,6 +273,103 @@ _LEDC_MODE_T = _descriptor.Descriptor(
 )
 
 
+_I2COPERATIONSREQUEST = _descriptor.Descriptor(
+  name='i2cOperationsRequest',
+  full_name='i2cOperationsRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='master_sda_gpio', full_name='i2cOperationsRequest.master_sda_gpio', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='master_scl_gpio', full_name='i2cOperationsRequest.master_scl_gpio', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='clock_speed', full_name='i2cOperationsRequest.clock_speed', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='slave_addr', full_name='i2cOperationsRequest.slave_addr', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='slave_sda_gpio', full_name='i2cOperationsRequest.slave_sda_gpio', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='slave_scl_gpio', full_name='i2cOperationsRequest.slave_scl_gpio', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=568,
+  serialized_end=729,
+)
+
+
+_I2COPERATIONSRESPONSE = _descriptor.Descriptor(
+  name='i2cOperationsResponse',
+  full_name='i2cOperationsResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='success', full_name='i2cOperationsResponse.success', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=731,
+  serialized_end=771,
+)
+
+
 _SETTIMEOFDAYREQUEST = _descriptor.Descriptor(
   name='SettimeofdayRequest',
   full_name='SettimeofdayRequest',
@@ -299,8 +396,8 @@ _SETTIMEOFDAYREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=567,
-  serialized_end=615,
+  serialized_start=773,
+  serialized_end=821,
 )
 
 
@@ -337,8 +434,8 @@ _SETTIMEOFDAYRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=617,
-  serialized_end=680,
+  serialized_start=823,
+  serialized_end=886,
 )
 
 
@@ -368,8 +465,8 @@ _GETTIMEOFDAYREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=682,
-  serialized_end=717,
+  serialized_start=888,
+  serialized_end=923,
 )
 
 
@@ -413,8 +510,8 @@ _GETTIMEOFDAYRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=719,
-  serialized_end=809,
+  serialized_start=925,
+  serialized_end=1015,
 )
 
 
@@ -444,8 +541,8 @@ _LEDC_CHANNEL_CONFIG_REQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=811,
-  serialized_end=883,
+  serialized_start=1017,
+  serialized_end=1089,
 )
 
 
@@ -475,8 +572,8 @@ _LEDC_CHANNEL_CONFIG_RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=885,
-  serialized_end=938,
+  serialized_start=1091,
+  serialized_end=1144,
 )
 
 
@@ -508,6 +605,13 @@ _REQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='i2c_request', full_name='Request.i2c_request', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -523,8 +627,8 @@ _REQUEST = _descriptor.Descriptor(
       name='RequestFunc', full_name='Request.RequestFunc',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=941,
-  serialized_end=1142,
+  serialized_start=1147,
+  serialized_end=1394,
 )
 
 
@@ -556,6 +660,13 @@ _RESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='i2c_response', full_name='Response.i2c_response', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -571,8 +682,8 @@ _RESPONSE = _descriptor.Descriptor(
       name='ResponseFunc', full_name='Response.ResponseFunc',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1145,
-  serialized_end=1354,
+  serialized_start=1397,
+  serialized_end=1654,
 )
 
 
@@ -619,8 +730,8 @@ _XRPCMESSAGE = _descriptor.Descriptor(
       name='MessageType', full_name='xRPCMessage.MessageType',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1356,
-  serialized_end=1474,
+  serialized_start=1656,
+  serialized_end=1774,
 )
 
 _LEDC_CHANNEL_CONFIG_T.fields_by_name['speed_mode'].message_type = _LEDC_MODE_T
@@ -636,6 +747,7 @@ _LEDC_CHANNEL_CONFIG_REQUEST.fields_by_name['ledc_conf'].message_type = _LEDC_CH
 _REQUEST.fields_by_name['settimeofday_request'].message_type = _SETTIMEOFDAYREQUEST
 _REQUEST.fields_by_name['gettimeofday_request'].message_type = _GETTIMEOFDAYREQUEST
 _REQUEST.fields_by_name['ledc_channel_config_request'].message_type = _LEDC_CHANNEL_CONFIG_REQUEST
+_REQUEST.fields_by_name['i2c_request'].message_type = _I2COPERATIONSREQUEST
 _REQUEST.oneofs_by_name['RequestFunc'].fields.append(
   _REQUEST.fields_by_name['settimeofday_request'])
 _REQUEST.fields_by_name['settimeofday_request'].containing_oneof = _REQUEST.oneofs_by_name['RequestFunc']
@@ -645,9 +757,13 @@ _REQUEST.fields_by_name['gettimeofday_request'].containing_oneof = _REQUEST.oneo
 _REQUEST.oneofs_by_name['RequestFunc'].fields.append(
   _REQUEST.fields_by_name['ledc_channel_config_request'])
 _REQUEST.fields_by_name['ledc_channel_config_request'].containing_oneof = _REQUEST.oneofs_by_name['RequestFunc']
+_REQUEST.oneofs_by_name['RequestFunc'].fields.append(
+  _REQUEST.fields_by_name['i2c_request'])
+_REQUEST.fields_by_name['i2c_request'].containing_oneof = _REQUEST.oneofs_by_name['RequestFunc']
 _RESPONSE.fields_by_name['settimeofday_response'].message_type = _SETTIMEOFDAYRESPONSE
 _RESPONSE.fields_by_name['gettimeofday_response'].message_type = _GETTIMEOFDAYRESPONSE
 _RESPONSE.fields_by_name['ledc_channel_config_response'].message_type = _LEDC_CHANNEL_CONFIG_RESPONSE
+_RESPONSE.fields_by_name['i2c_response'].message_type = _I2COPERATIONSRESPONSE
 _RESPONSE.oneofs_by_name['ResponseFunc'].fields.append(
   _RESPONSE.fields_by_name['settimeofday_response'])
 _RESPONSE.fields_by_name['settimeofday_response'].containing_oneof = _RESPONSE.oneofs_by_name['ResponseFunc']
@@ -657,6 +773,9 @@ _RESPONSE.fields_by_name['gettimeofday_response'].containing_oneof = _RESPONSE.o
 _RESPONSE.oneofs_by_name['ResponseFunc'].fields.append(
   _RESPONSE.fields_by_name['ledc_channel_config_response'])
 _RESPONSE.fields_by_name['ledc_channel_config_response'].containing_oneof = _RESPONSE.oneofs_by_name['ResponseFunc']
+_RESPONSE.oneofs_by_name['ResponseFunc'].fields.append(
+  _RESPONSE.fields_by_name['i2c_response'])
+_RESPONSE.fields_by_name['i2c_response'].containing_oneof = _RESPONSE.oneofs_by_name['ResponseFunc']
 _XRPCMESSAGE.fields_by_name['request'].message_type = _REQUEST
 _XRPCMESSAGE.fields_by_name['response'].message_type = _RESPONSE
 _XRPCMESSAGE.fields_by_name['time_stamp'].message_type = _TIMEVAL
@@ -671,6 +790,8 @@ DESCRIPTOR.message_types_by_name['ledc_channel_config_t'] = _LEDC_CHANNEL_CONFIG
 DESCRIPTOR.message_types_by_name['ledc_intr_type_t'] = _LEDC_INTR_TYPE_T
 DESCRIPTOR.message_types_by_name['ledc_channel_t'] = _LEDC_CHANNEL_T
 DESCRIPTOR.message_types_by_name['ledc_mode_t'] = _LEDC_MODE_T
+DESCRIPTOR.message_types_by_name['i2cOperationsRequest'] = _I2COPERATIONSREQUEST
+DESCRIPTOR.message_types_by_name['i2cOperationsResponse'] = _I2COPERATIONSRESPONSE
 DESCRIPTOR.message_types_by_name['SettimeofdayRequest'] = _SETTIMEOFDAYREQUEST
 DESCRIPTOR.message_types_by_name['SettimeofdayResponse'] = _SETTIMEOFDAYRESPONSE
 DESCRIPTOR.message_types_by_name['GettimeofdayRequest'] = _GETTIMEOFDAYREQUEST
@@ -715,6 +836,20 @@ ledc_mode_t = _reflection.GeneratedProtocolMessageType('ledc_mode_t', (_message.
   # @@protoc_insertion_point(class_scope:ledc_mode_t)
   ))
 _sym_db.RegisterMessage(ledc_mode_t)
+
+i2cOperationsRequest = _reflection.GeneratedProtocolMessageType('i2cOperationsRequest', (_message.Message,), dict(
+  DESCRIPTOR = _I2COPERATIONSREQUEST,
+  __module__ = 'messagefile_pb2'
+  # @@protoc_insertion_point(class_scope:i2cOperationsRequest)
+  ))
+_sym_db.RegisterMessage(i2cOperationsRequest)
+
+i2cOperationsResponse = _reflection.GeneratedProtocolMessageType('i2cOperationsResponse', (_message.Message,), dict(
+  DESCRIPTOR = _I2COPERATIONSRESPONSE,
+  __module__ = 'messagefile_pb2'
+  # @@protoc_insertion_point(class_scope:i2cOperationsResponse)
+  ))
+_sym_db.RegisterMessage(i2cOperationsResponse)
 
 SettimeofdayRequest = _reflection.GeneratedProtocolMessageType('SettimeofdayRequest', (_message.Message,), dict(
   DESCRIPTOR = _SETTIMEOFDAYREQUEST,

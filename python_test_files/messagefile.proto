@@ -34,6 +34,19 @@ message ledc_mode_t{
 	ledc_mode_e ledc_speed = 1;
 }
 
+message i2cOperationsRequest{
+	int32 master_sda_gpio = 1;
+	int32 master_scl_gpio = 2;
+	int32 clock_speed = 3;
+	int32 slave_addr = 4;
+	int32 slave_sda_gpio = 5;
+	int32 slave_scl_gpio = 6;
+}
+
+message i2cOperationsResponse{
+	int32 success = 1;
+}
+
 message SettimeofdayRequest {
 	TimeVal timeval = 1;
 }
@@ -65,6 +78,7 @@ message Request {
 		SettimeofdayRequest settimeofday_request = 1;
 		GettimeofdayRequest gettimeofday_request = 2;
 		ledc_channel_config_Request ledc_channel_config_request = 3;
+		i2cOperationsRequest i2c_request = 4;
 	}
 }
 
@@ -73,6 +87,7 @@ message Response {
 		SettimeofdayResponse settimeofday_response = 1;
 		GettimeofdayResponse gettimeofday_response = 2;
 		ledc_channel_config_Response ledc_channel_config_response = 3;
+		i2cOperationsResponse i2c_response = 4;
 	}
 }
 

@@ -48,6 +48,14 @@ def on_message(client, userdata, message):
             print("Led control achieved. Press Ctrl + C to stop current loop and select y/n to send another request.")
         else:
             print("Failed")
+    elif data_inbox.response.HasField("i2c_response"):
+        print("Procedure called: i2c operation")
+        print("Timestamp: seconds: {} microseconds: {}".format(data_inbox.time_stamp.tv_sec , data_inbox.time_stamp.tv_usec))
+        if data_inbox.response.i2c_response.success == 1:
+            print("i2c master read/write to slave buffer successful.")
+            print("Press Ctrl + C to stop current loop and select y/n (yes/no) to send another request.")
+        else:
+            print("Error occured!")
     else:
         print("Requests are not supported by the subscriber.")
 
@@ -103,6 +111,13 @@ def rpc_sen(client, topic , procedure):
         data_outbox.request.ledc_channel_config_request.ledc_conf.intr_type.intr = message_in.ledc_intr_type_t.interrupt_type.LEDC_INTR_FADE_END
         #print("Message type:", data_outbox.request)
         #print("Outbox: ", data_outbox)
+    if procedure == "i2c_op" :
+        data_outbox.request.i2c_request.master_sda_gpio = int(input("Enter master sda pin: "))
+        data_outbox.request.i2c_request.master_scl_gpio = int(input("Enter master scl pin: "))
+        data_outbox.request.i2c_request.clock_speed = int(input("Enter clock speed: "))
+        data_outbox.request.i2c_request.slave_addr = int(input("Enter slave address: "), 0)
+        data_outbox.request.i2c_request.slave_sda_gpio = int(input("Enter slave sda pin: "))
+        data_outbox.request.i2c_request.slave_scl_gpio = int(input("Enter slave scl pin: "))
     otb = data_outbox.SerializeToString()
     client.publish(topic,otb,qos=0)
 
@@ -111,7 +126,7 @@ def rpc_sen(client, topic , procedure):
 
 
 def main(client, topic):
-    print("Enter procedure: gettimeofday / settimeofday / ledcontrol. ")
+    print("Enter procedure: gettimeofday / settimeofday / ledcontrol / i2c_op .")
     procedure = input()
     rpc_sen(client, topic , procedure)
     
@@ -133,8 +148,8 @@ def main(client, topic):
     return 0
 
 if __name__ == "__main__":
-    broker="spr.io"
-    port=60083
+    broker="mqtt.eclipse.org"
+    port=1883
     ts = datetime.datetime.now().isoformat()
     c = 'client-' + ts[-6:]
     print(c, broker, port)

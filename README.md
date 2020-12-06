@@ -20,6 +20,30 @@ python3 client-pub-alt2.py 101/xRPC_Request gettimeofday
 Similiarly, to execute settimeofday():  (SETS CURRENT TIME IN UTC)
 python3 client-pub-alt2.py 101/xRPC_Request settimeofday
 
+# PIN ASSIGNMENT FOR I2C OPERATION:
+* Enter pin nos. for master sda and scl (We can use master_sda_gpio = 18, master_scl_gpio = 19)
+* Enter the clock speed in Hz (IT SHOULD NOT EXCEED 1 MHZ) 
+* Enter the address of slave in hexadecimal (use 0x28 for this example)
+* Enter pin nos. for slave sda and slave scl (We can use slave_sda_gpio = 4, slave_scl_gpio = 5)
+
+Preferably , use this settings while testing:
+|                  | SDA    | SCL    |
+| ---------------- | ------ | ------ |
+| ESP32 I2C Master | GPIO18 | GPIO19 |
+| ESP32 I2C Slave  | GPIO4  | GPIO5  |
+
+ slave:
+  - GPIO4 is assigned as the data signal of I2C slave port
+  - GPIO5 is assigned as the clock signal of I2C slave port
+- master:
+  - GPIO18 is assigned as the data signal of I2C master port
+  - GPIO19 is assigned as the clock signal of I2C master port
+  - Connection:
+  - connect GPIO18 with GPIO4
+  - connect GPIO19 with GPIO5
+If not connected properly, then an I2C timeout error will occur. 
+
+**Note: ** There’s no need to add an external pull-up resistors for SDA/SCL pin, because the driver will enable the internal pull-up resistors by default in our program.
 
 ### Configure the project
 
