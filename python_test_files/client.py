@@ -53,6 +53,9 @@ def on_message(client, userdata, message):
         print("Timestamp: seconds: {} microseconds: {}".format(data_inbox.time_stamp.tv_sec , data_inbox.time_stamp.tv_usec))
         if data_inbox.response.i2c_response.success == 1:
             print("i2c master read/write to slave buffer successful.")
+            print("Temperature in C: ", data_inbox.response.i2c_response.temp)
+            print("Relative Humidity in %: ", data_inbox.response.i2c_response.rel_hum)
+            print("Pressure in Pa: ", data_inbox.response.i2c_response.pres)
             print("Press Ctrl + C to stop current loop and select y/n (yes/no) to send another request.")
         else:
             print("Error occured!")
@@ -112,12 +115,8 @@ def rpc_sen(client, topic , procedure):
         #print("Message type:", data_outbox.request)
         #print("Outbox: ", data_outbox)
     if procedure == "i2c_op" :
-        data_outbox.request.i2c_request.master_sda_gpio = int(input("Enter master sda pin: "))
-        data_outbox.request.i2c_request.master_scl_gpio = int(input("Enter master scl pin: "))
-        data_outbox.request.i2c_request.clock_speed = int(input("Enter clock speed: "))
-        data_outbox.request.i2c_request.slave_addr = int(input("Enter slave address: "), 0)
-        data_outbox.request.i2c_request.slave_sda_gpio = int(input("Enter slave sda pin: "))
-        data_outbox.request.i2c_request.slave_scl_gpio = int(input("Enter slave scl pin: "))
+        data_outbox.request.i2c_request.slave_sda_gpio = int(input("Enter sensor sda pin: "))
+        data_outbox.request.i2c_request.slave_scl_gpio = int(input("Enter sensor scl pin: "))
     otb = data_outbox.SerializeToString()
     client.publish(topic,otb,qos=0)
 

@@ -1,46 +1,36 @@
 # ESP-MQTT sample application
 (See the README.md file in the upper level 'examples' directory for more information about examples.)
 
-This example connects to the broker URI selected using `idf.py menuconfig` (using mqtt tcp transport) and as a demonstration subscribes/unsubscribes and send a message on certain topic.
+This example connects to the broker URI selected using `idf.py menuconfig` (using mqtt tcp transport) and  subscribes/unsubscribes and sends a message on certain topic.
 (Please note that the public broker is maintained by the community so may not be always available, for details please see this [disclaimer](https://iot.eclipse.org/getting-started/#sandboxes))
 
 Note: If the URI equals `FROM_STDIN` then the broker address is read from stdin upon application startup (used for testing)
 
 It uses ESP-MQTT library which implements mqtt client to connect to mqtt broker, and then uses protocol buffers for communication.
 
+To interface with the BME280 I2C sensor, we have used the BME280 library from Bosch Sensortec. (https://github.com/BoschSensortec/BME280_driver/tree/master)
+The library is stored in the components subdirectory.
 ## How to use example
 
 ### Hardware Required
 
-This example can be executed on any ESP32 board, the only required interface is WiFi and connection to internet.
-Use client-pub-alt2.py to execute RPCs on the board.
+This example can be executed on any ESP32 board, the only required interface is WiFi and connection to internet, and a BME280 sensor.
+Use client.py to execute RPCs on the board.
 The currently set device ID is 101, that means publisher has to publish to 101/xRPC_Request to execute RPCs.
-To execute gettimeofday():
-python3 client-pub-alt2.py 101/xRPC_Request gettimeofday
-Similiarly, to execute settimeofday():  (SETS CURRENT TIME IN UTC)
-python3 client-pub-alt2.py 101/xRPC_Request settimeofday
-
+When client.py is executed, it will prompt you to enter a topic to publish to. Here you may enter 101/xRPC_Request (this is hardcoded to esp32)
+Then you may pick any one of the operations, and then enter the necessary inputs to execute the operation.
+After that if you want to continue, press CTRL+C(WIN) / CMD + C(MAC) and then enter whether you want to continue or not (y/n). 
 # PIN ASSIGNMENT FOR I2C OPERATION:
-* Enter pin nos. for master sda and scl (We can use master_sda_gpio = 18, master_scl_gpio = 19)
-* Enter the clock speed in Hz (IT SHOULD NOT EXCEED 1 MHZ) 
-* Enter the address of slave in hexadecimal (use 0x28 for this example)
-* Enter pin nos. for slave sda and slave scl (We can use slave_sda_gpio = 4, slave_scl_gpio = 5)
+* Enter pin nos. for master sda and scl (We can use master_sda_gpio = 18, master_scl_gpio = 19) 
 
 Preferably , use this settings while testing:
 |                  | SDA    | SCL    |
 | ---------------- | ------ | ------ |
-| ESP32 I2C Master | GPIO18 | GPIO19 |
-| ESP32 I2C Slave  | GPIO4  | GPIO5  |
+| BME280           | GPIO18 | GPIO19 |
 
- slave:
-  - GPIO4 is assigned as the data signal of I2C slave port
-  - GPIO5 is assigned as the clock signal of I2C slave port
-- master:
-  - GPIO18 is assigned as the data signal of I2C master port
-  - GPIO19 is assigned as the clock signal of I2C master port
-  - Connection:
-  - connect GPIO18 with GPIO4
-  - connect GPIO19 with GPIO5
+ Connecting BME280 to ESP32
+  - GPIO18 is assigned as the data signal of BME280 (SDA)
+  - GPIO19 is assigned as the clock signal of BME280 (SCL)
 If not connected properly, then an I2C timeout error will occur. 
 
 **Note: ** There’s no need to add an external pull-up resistors for SDA/SCL pin, because the driver will enable the internal pull-up resistors by default in our program.
@@ -63,7 +53,7 @@ idf.py -p PORT flash monitor
 
 See the Getting Started Guide for full steps to configure and use ESP-IDF to build projects.
 
-## Example Output gettimeofday
+## Example Output (NEEDS TO BE UPDATED)
 Output for gettimeofday()
 
 ```

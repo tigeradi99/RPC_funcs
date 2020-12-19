@@ -114,26 +114,25 @@ struct  _LedcModeT
 struct  _I2cOperationsRequest
 {
   ProtobufCMessage base;
-  int32_t master_sda_gpio;
-  int32_t master_scl_gpio;
-  int32_t clock_speed;
-  int32_t slave_addr;
   int32_t slave_sda_gpio;
   int32_t slave_scl_gpio;
 };
 #define I2C_OPERATIONS_REQUEST__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&i2c_operations_request__descriptor) \
-    , 0, 0, 0, 0, 0, 0 }
+    , 0, 0 }
 
 
 struct  _I2cOperationsResponse
 {
   ProtobufCMessage base;
   int32_t success;
+  float temp;
+  float rel_hum;
+  float pres;
 };
 #define I2C_OPERATIONS_RESPONSE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&i2c_operations_response__descriptor) \
-    , 0 }
+    , 0, 0, 0, 0 }
 
 
 struct  _SettimeofdayRequest

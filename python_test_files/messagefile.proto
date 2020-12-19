@@ -35,16 +35,15 @@ message ledc_mode_t{
 }
 
 message i2cOperationsRequest{
-	int32 master_sda_gpio = 1;
-	int32 master_scl_gpio = 2;
-	int32 clock_speed = 3;
-	int32 slave_addr = 4;
-	int32 slave_sda_gpio = 5;
-	int32 slave_scl_gpio = 6;
+	int32 slave_sda_gpio = 1;
+	int32 slave_scl_gpio = 2;
 }
 
 message i2cOperationsResponse{
 	int32 success = 1;
+	float temp = 2;
+	float rel_hum = 3;
+	float pres = 4;
 }
 
 message SettimeofdayRequest {

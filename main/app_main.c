@@ -35,6 +35,8 @@
 #include <sys/time.h>
 #include "driver/ledc.h"
 #include "driver/i2c.h"
+#include "driver/gpio.h"
+#include "bme280.h"
 
 #define DATA_LENGTH 512                  /*!< Data buffer length of test buffer */
 #define RW_TEST_LENGTH 128               /*!< Data length for r/w test, [0,DATA_LENGTH] */
@@ -48,75 +50,128 @@
 #define NACK_VAL 0x1                            /*!< I2C nack value */
 #define I2C_MASTER_PORT I2C_NUM_0                             /*!<I2C CONTROLLER PORT SET TO 0 FOR MASTER>*/
 #define I2C_SLAVE_PORT I2C_NUM_1                               /*!<I2C CONTROLLER PORT SET TO 1 FOR SLAVE>*/
-#define ESP_SLAVE_ADDR 0x28
+#define ESP_SLAVE_ADDR 0x76
 
 static const char *TAG = "xRPC_example";
 
+struct param
+{
+    esp_mqtt_client_handle_t client;
+    Request *request_i2c;
+}para;
+
 /**
- *        test code to read esp-i2c-slave
- *        We need to fill the buffer of esp slave device, then master can read them out.
+*   Initialize the I2C controller with given sda and scl gpio numbers passed to init function as parameters.
+*   set mode to I2C MASTER, enable internal pullup resistors for both SDA and SCL.
+*   Finally, clock speed is set to 100000 Hz.
+*/
+void i2c_init_master(int sda_gpio, int scl_gpio)
+{
+    i2c_config_t conf_mas;
+    conf_mas.mode = I2C_MODE_MASTER;
+    conf_mas.sda_io_num = sda_gpio;
+    conf_mas.sda_pullup_en = GPIO_PULLUP_ENABLE; //ENABLE INTERNAL PULLUP RESISTORS FOR SDA LINE
+    conf_mas.scl_io_num = scl_gpio;
+    conf_mas.scl_pullup_en = GPIO_PULLUP_ENABLE; //ENABLE INTERNAL PULLUP RESISTORS FOR SCL LINE
+    conf_mas.master.clk_speed = 100000;
+    i2c_param_config(I2C_MASTER_PORT, &conf_mas);
+    i2c_driver_install(I2C_MASTER_PORT, conf_mas.mode, 0, 0, 0);
+    
+    esp_err_t f_retval;// check if the I2C Controller has initialized successfully or not
+    i2c_cmd_handle_t cmd = i2c_cmd_link_create();// Creating an I2C procedure handle named cmd
+
+    /* Start I2C communication procedure after creating link. Here, we write 7 bit slave address and wait for acknowledgement bit from slave.*/
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, (ESP_SLAVE_ADDR << 1) | I2C_MASTER_WRITE, true);
+    i2c_master_stop(cmd);
+    /* End I2C Communication procedure*/
+
+    f_retval = i2c_master_cmd_begin(I2C_NUM_0, cmd, 1000 / portTICK_RATE_MS);// Execute the procedure defined above for a duration of 1 second.
+    if (f_retval != ESP_OK) {
+        printf("I2C slave NOT working or wrong I2C slave address - error (%i)", f_retval);
+        // LABEL
+    }
+    i2c_cmd_link_delete(cmd);// deleting the created procedure handle cmd
+}
+/**
+ *        test code to read esp-i2c-sensor.
+ *        First, we write the register address to BME280. (first write 7 bit sensor address, wait for 1 bit acknowledgement. Them write 1 byte of data(register address))
+ *        Then we start reading bytes from BME280's register. (first write 7 bit sensor address, wait for 1 bit acknowledgement. AFTER THAT, WRITE N - 1 bytes and wait for acknowledgement.
+ *        After getting acknowledgement, write last byte and wait for NACK (no response condition) to stop transmission).                
  *
- * _______________________________________________________________________________________
- * | start | slave_addr + rd_bit +ack | read n-1 bytes + ack | read 1 byte + nack | stop |
- * --------|--------------------------|----------------------|--------------------|------|
+ * ____________________________________________________________________________________________________________________________________________
+ * | start | slave_addr + wr_bit +ack | write reg_addr byte + ack | slave_addr + rd_bit + ack|read n-1 bytes + ack | read 1 byte + nack| stop |
+ * --------|--------------------------|---------------------------|--------------------------|---------------------|-------------------|------|
  *
  */
-static esp_err_t i2c_master_read_slave(i2c_port_t i2c_num, uint8_t *data_rd, size_t size)
+int8_t i2c_master_reg_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr)
 {
-    if (size == 0) {
-        return ESP_OK;
-    }
+    int8_t iError;
+    esp_err_t esp_err;
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
-    i2c_master_write_byte(cmd, (ESP_SLAVE_ADDR << 1) | READ_BIT, ACK_CHECK_EN); //write slave address + ack
-    if (size > 1) {
-        i2c_master_read(cmd, data_rd, size - 1, ACK_VAL); //read n - 1 bytes from slave, store to buffer data_rd
+    i2c_master_write_byte(cmd, (ESP_SLAVE_ADDR << 1) | I2C_MASTER_WRITE, ACK_CHECK_EN); //write slave address + ack
+    i2c_master_write_byte(cmd, reg_addr, ACK_CHECK_EN);
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, (ESP_SLAVE_ADDR << 1) | I2C_MASTER_READ, ACK_CHECK_EN);
+    if(length > 1)
+    {
+        i2c_master_read(cmd, reg_data, length-1, I2C_MASTER_ACK);
     }
-    i2c_master_read_byte(cmd, data_rd + size - 1, NACK_VAL);
+    i2c_master_read_byte(cmd, reg_data + length - 1, I2C_MASTER_NACK);
     i2c_master_stop(cmd);
-    esp_err_t ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
+    esp_err = i2c_master_cmd_begin(I2C_MASTER_PORT, cmd, 1000 / portTICK_PERIOD_MS);
+    if(esp_err == ESP_OK)
+    {
+        iError = 0;
+    }
+    else{
+        iError = -1;
+    }
     i2c_cmd_link_delete(cmd);
-    return ret;
+    return iError;
 }
 
 /**
- *        Test code to write esp-i2c-slave
- *        Master device write data to slave(both esp32),
+ *        Test code to write esp-i2c-sensor
+ *        Master device write data to slave(BME280),
  *        the data will be stored in slave buffer.
- *        We can read them out from slave buffer.
  *
- * ___________________________________________________________________
- * | start | slave_addr + wr_bit + ack | write n bytes + ack  | stop |
- * --------|---------------------------|----------------------|------|
+ * _______________________________________________________________________________________
+ * | start | slave_addr + wr_bit + ack |write reg_addr + ack|write n bytes + ack  | stop |
+ * --------|---------------------------|--------------------|---------------------|------|
  *
  */
-static esp_err_t i2c_master_write_slave(i2c_port_t i2c_num, uint8_t *data_wr, size_t size)
+int8_t i2c_master_reg_write(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr)
 {
+    int8_t iError;
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
-    i2c_master_write_byte(cmd, (ESP_SLAVE_ADDR << 1) | WRITE_BIT, ACK_CHECK_EN); //write slave address + ack
-    i2c_master_write(cmd, data_wr, size, ACK_CHECK_EN); //write bytes from buffer data_wr
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, (ESP_SLAVE_ADDR << 1) | I2C_MASTER_WRITE, true); //write slave address + check ack 
+    i2c_master_write_byte(cmd, reg_addr, true); //write byte (register_address)
+    i2c_master_write(cmd, reg_data, length, true);
     i2c_master_stop(cmd);
-    esp_err_t ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
+    esp_err_t ret = i2c_master_cmd_begin(I2C_MASTER_PORT, cmd, 1000 / portTICK_RATE_MS);
+    if(ret == ESP_OK){
+        iError = 0;
+    }
+    else{
+        iError = -1;
+    }
     i2c_cmd_link_delete(cmd);
-    return ret;
+    return iError;
 }
 
 /**
- *      test function to show buffer
+ *      custom delay function for i2c opn
  */
-static void disp_buf(uint8_t *buf, int len)
-{
-    int i;
-    for (i = 0; i < len; i++) {
-        printf("%02x ", buf[i]);
-        if ((i + 1) % 16 == 0) {
-            printf("\n");
-        }
-    }
-    printf("\n");
+void delay_ms(uint32_t period_ms, void *intf_ptr) {
+    /* Implement the delay routine according to the target machine */
+         ets_delay_us(period_ms * 1000);
 }
 
 void *buffer; //buffer to store incoming.
+
 /* Function used to get time and store it into response which us a struct of type GettimeofdayResponse*/
 int gettimeofday_func(void *clnt , void *request)
 {
@@ -399,10 +454,10 @@ int ledcontroller_func(void *clnt, void *request)
     return 0;
 }
 
-int test_i2c_rw_func(void *clnt, void *request)
+void test_i2c_rw_func(void *params)
 {
-    esp_mqtt_client_handle_t client = (esp_mqtt_client_handle_t)clnt;
-    Request *request_i2c = (Request*)request;
+    esp_mqtt_client_handle_t client = ((struct param*)params)->client;
+    Request *request_i2c = ((struct param*)params)->request_i2c;
     XRPCMessage toSend = X_RPCMESSAGE__INIT;
     struct timeval tv;
 
@@ -426,96 +481,53 @@ int test_i2c_rw_func(void *clnt, void *request)
     i2c_operations_response__init(toSend.response->i2c_response);
 
     /*SETTING UP MASTER AT PORT 0*/
-    i2c_config_t conf_mas;
-    conf_mas.mode = I2C_MODE_MASTER;
-    conf_mas.sda_io_num = request_i2c->i2c_request->master_sda_gpio;
-    conf_mas.sda_pullup_en = GPIO_PULLUP_ENABLE; //ENABLE INTERNAL PULLUP RESISTORS FOR SDA LINE
-    conf_mas.scl_io_num = request_i2c->i2c_request->master_scl_gpio;
-    conf_mas.scl_pullup_en = GPIO_PULLUP_ENABLE; //ENABLE INTERNAL PULLUP RESISTORS FOR SCL LINE
-    conf_mas.master.clk_speed = request_i2c->i2c_request->clock_speed;
-    i2c_param_config(I2C_MASTER_PORT, &conf_mas);
-    i2c_driver_install(I2C_MASTER_PORT, conf_mas.mode, 0, 0, 0);
+    i2c_init_master(request_i2c->i2c_request->slave_sda_gpio, request_i2c->i2c_request->slave_scl_gpio);
 
-    /*SETTING UP SLAVE AT PORT 1*/
-    i2c_config_t conf_slave;
-    conf_slave.mode = I2C_MODE_SLAVE;
-    conf_slave.slave.addr_10bit_en = 0;
-    conf_slave.slave.slave_addr = request_i2c->i2c_request->slave_addr;
-    conf_slave.scl_io_num = request_i2c->i2c_request->slave_scl_gpio;
-    conf_slave.scl_pullup_en = GPIO_PULLUP_ENABLE; //ENABLE INTERNAL PULLUP RESISTORS FOR SCL LINE
-    conf_slave.sda_io_num = request_i2c->i2c_request->slave_sda_gpio;
-    conf_slave.sda_pullup_en = GPIO_PULLUP_ENABLE; //ENABLE INTERNAL PULLUP RESISTORS FOR SDA LINE
-    i2c_param_config(I2C_SLAVE_PORT, &conf_slave);
-    i2c_driver_install(I2C_SLAVE_PORT, conf_slave.mode, I2C_SLAVE_RX_BUF_LEN, I2C_SLAVE_TX_BUF_LEN, 0);
-
-    int i = 0;
-    int ret;
-    //uint32_t task_idx = (uint32_t)arg;
-    uint8_t *data = (uint8_t *)malloc(DATA_LENGTH); //buffer to store data which will be written into the slave buffer by the master
-    uint8_t *data_wr = (uint8_t *)malloc(DATA_LENGTH); //slave write buffer of length 512
-    uint8_t *data_rd = (uint8_t *)malloc(DATA_LENGTH); //slave read buffer of length 512
+    /*Initializing BME280 with parameters*/
+    struct bme280_dev device;
+    int8_t rslt = BME280_OK,rslt2;
+    uint8_t dev_addr = BME280_I2C_ADDR_PRIM;
     
-/*Shamelessly copied from the i2c example XD */
-    for (i = 0; i < DATA_LENGTH; i++) {
-            data[i] = i; //fill example data
-        }
-        //xSemaphoreTake(print_mux, portMAX_DELAY);
-        size_t d_size = i2c_slave_write_buffer(I2C_SLAVE_PORT, data, RW_TEST_LENGTH, 1000 / portTICK_RATE_MS);
-        if (d_size == 0) {
-            ESP_LOGW(TAG, "i2c slave tx buffer full");
-            ret = i2c_master_read_slave(I2C_MASTER_PORT, data_rd, DATA_LENGTH);
-        } else {
-            ret = i2c_master_read_slave(I2C_MASTER_PORT, data_rd, RW_TEST_LENGTH);
-        }
+    device.intf_ptr = &dev_addr;
+    device.intf = BME280_I2C_INTF;
+    device.read = i2c_master_reg_read;//read function pointer
+    device.write = i2c_master_reg_write;//write function pointer
+    device.delay_us = delay_ms;//delay function pointer
 
-        if (ret == ESP_ERR_TIMEOUT) {
-            ESP_LOGE(TAG, "I2C Timeout");
-        } else if (ret == ESP_OK) {
-            printf("*******************\n");
-            printf("TASK[]  MASTER READ FROM SLAVE\n");
-            printf("*******************\n");
-            printf("====TASK[] Slave buffer data ====\n");
-            disp_buf(data, d_size);
-            printf("====TASK[] Master read ====\n");
-            disp_buf(data_rd, d_size);
-            toSend.response->i2c_response->success = 1;
-        } else {
-            ESP_LOGW(TAG, "TASK[] %s: Master read slave error, IO not connected...\n",
-                     esp_err_to_name(ret));
-                     toSend.response->i2c_response->success = 0;
-        }
-        //xSemaphoreGive(print_mux);
-        vTaskDelay(1000 / portTICK_RATE_MS);
-        //---------------------------------------------------
-        int size;
-        for (i = 0; i < DATA_LENGTH; i++) {
-            data_wr[i] = i + 10;
-        }
-        //xSemaphoreTake(print_mux, portMAX_DELAY);
-        //we need to fill the slave buffer so that master can read later
-        ret = i2c_master_write_slave(I2C_MASTER_PORT, data_wr, RW_TEST_LENGTH);
-        if (ret == ESP_OK) {
-            size = i2c_slave_read_buffer(I2C_SLAVE_PORT, data, RW_TEST_LENGTH, 1000 / portTICK_RATE_MS);
-        }
-        if (ret == ESP_ERR_TIMEOUT) {
-            ESP_LOGE(TAG, "I2C Timeout");
-        } else if (ret == ESP_OK) {
-            printf("*******************\n");
-            printf("TASK[]  MASTER WRITE TO SLAVE\n");
-            printf("*******************\n");
-            printf("----TASK[] Master write ----\n");
-            disp_buf(data_wr, RW_TEST_LENGTH);
-            printf("----TASK[] Slave read: [%d] bytes ----\n", size);
-            disp_buf(data, size);
-            toSend.response->i2c_response->success = 1;
-        } else {
-            ESP_LOGW(TAG, "TASK[] %s: Master write slave error, IO not connected....\n",
-                      esp_err_to_name(ret));
-                      toSend.response->i2c_response->success = 0;
-        }
-        //xSemaphoreGive(print_mux);
-        vTaskDelay(1000 / portTICK_RATE_MS);
+    rslt = bme280_init(&device);
+
+    uint8_t settings_sel;
+	struct bme280_data comp_data;
     
+	/* Recommended mode of operation: Indoor navigation. Refer to https://github.com/BoschSensortec/BME280_driver/tree/master */
+	device.settings.osr_h = BME280_OVERSAMPLING_1X;
+	device.settings.osr_p = BME280_OVERSAMPLING_16X;
+	device.settings.osr_t = BME280_OVERSAMPLING_2X;
+	device.settings.filter = BME280_FILTER_COEFF_16;
+	device.settings.standby_time = BME280_STANDBY_TIME_62_5_MS;
+
+	settings_sel = BME280_OSR_PRESS_SEL;
+	settings_sel |= BME280_OSR_TEMP_SEL;
+	settings_sel |= BME280_OSR_HUM_SEL;
+	settings_sel |= BME280_STANDBY_SEL;
+	settings_sel |= BME280_FILTER_SEL;
+
+    rslt = bme280_set_sensor_settings(settings_sel, &device);//Apply the above settings to sensor
+    printf("BME280 set status: %d \n", rslt);
+	rslt2 = bme280_set_sensor_mode(BME280_NORMAL_MODE, &device);//Set sensor mode to Normal operation mode
+    printf("BME280 set sensor mode status: %d \n", rslt2);
+    
+    device.delay_us(70, device.intf_ptr);//Wait for 70ms
+	rslt2 = bme280_get_sensor_data(BME280_ALL, &comp_data, &device);// Obtain readings from sensor
+    printf("BME280 get_data status: %d \n", rslt);
+
+    printf("Temp: %0.2f, Pressure:%0.2f, Humidity:%0.2f\r\n",comp_data.temperature, comp_data.pressure, comp_data.humidity);
+
+    toSend.response->i2c_response->success = rslt2; //Stores status of operation
+    toSend.response->i2c_response->temp = comp_data.temperature; //Store temperature
+    toSend.response->i2c_response->rel_hum = comp_data.humidity; //Store humidity 
+    toSend.response->i2c_response->pres = comp_data.pressure; //Store pressure 
+
     int len = x_rpcmessage__get_packed_size(&toSend);
     uint8_t buffer[len + 1];
     x_rpcmessage__pack(&toSend , (void*)buffer);
@@ -525,10 +537,20 @@ int test_i2c_rw_func(void *clnt, void *request)
     
     printf("Finished. \n");
     printf("Exiting... \n");
-    
-    return 0;
+    vTaskDelay(2000 / portTICK_PERIOD_MS);//Wait for 2 seconds
+    vTaskDelete(NULL);//Delete the created task
 }
 
+int read_sensor(void *clnt, void *request)
+{
+    /* Passing values to structure param, which contains the values to be passed to i2c read write task*/
+    para.client = (esp_mqtt_client_handle_t)clnt;
+    para.request_i2c = (Request*)request;
+    printf("Creating Task: \n");
+    /* Creating Task to execute sesor read*/
+    xTaskCreate(&test_i2c_rw_func, "R/W SENSOR", 4096, &para, 0, NULL);
+    return 0;
+}
 int func0(void *clnt , void *request)
 {
     printf("Invalid type");
@@ -541,7 +563,7 @@ static pf xRPC_func[] = {
     settimeofday_func, 
     gettimeofday_func,
     ledcontroller_func,
-    test_i2c_rw_func};
+    read_sensor};
 
 
 
