@@ -139,7 +139,7 @@ CONFIG_EXAMPLE_CONNECT_IPV6_PREF_LOCAL_LINK=y
 #
 # Example Configuration
 #
-CONFIG_BROKER_URL="mqtt://mqtt.eclipse.org:1883"
+CONFIG_BROKER_URL="mqtt://test.mosquitto.org:1883"
 # end of Example Configuration
 
 #

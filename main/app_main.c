@@ -53,6 +53,7 @@
 #define ESP_SLAVE_ADDR 0x76
 
 static const char *TAG = "xRPC_example";
+int driver_installed_stat = 0;
 
 struct param
 {
@@ -481,8 +482,12 @@ void test_i2c_rw_func(void *params)
     i2c_operations_response__init(toSend.response->i2c_response);
 
     /*SETTING UP MASTER AT PORT 0*/
-    i2c_init_master(request_i2c->i2c_request->slave_sda_gpio, request_i2c->i2c_request->slave_scl_gpio);
-
+    if(driver_installed_stat == 0)
+    {
+        i2c_init_master(request_i2c->i2c_request->slave_sda_gpio, request_i2c->i2c_request->slave_scl_gpio);
+        driver_installed_stat = 1;
+    }
+ 
     /*Initializing BME280 with parameters*/
     struct bme280_dev device;
     int8_t rslt = BME280_OK,rslt2;

@@ -26,11 +26,12 @@ After that if you want to continue, press CTRL+C(WIN) / CMD + C(MAC) and then en
 Preferably , use this settings while testing:
 |                  | SDA    | SCL    |
 | ---------------- | ------ | ------ |
-| BME280           | GPIO18 | GPIO19 |
+| BME280           | GPIO21 | GPIO22 |
 
  Connecting BME280 to ESP32
-  - GPIO18 is assigned as the data signal of BME280 (SDA)
-  - GPIO19 is assigned as the clock signal of BME280 (SCL)
+  - GPIO21 is assigned as the data signal of BME280 (SDA)
+  - GPIO22 is assigned as the clock signal of BME280 (SCL)
+  - Use 3V3 from ESP32 to power the BME280, then connect the GND pin next to 3V3  pin on the ESP32 to the GND pin on the BME280.
 If not connected properly, then an I2C timeout error will occur. 
 
 **Note: ** There’s no need to add an external pull-up resistors for SDA/SCL pin, because the driver will enable the internal pull-up resistors by default in our program.

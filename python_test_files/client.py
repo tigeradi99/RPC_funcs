@@ -51,7 +51,7 @@ def on_message(client, userdata, message):
     elif data_inbox.response.HasField("i2c_response"):
         print("Procedure called: i2c operation")
         print("Timestamp: seconds: {} microseconds: {}".format(data_inbox.time_stamp.tv_sec , data_inbox.time_stamp.tv_usec))
-        if data_inbox.response.i2c_response.success == 1:
+        if data_inbox.response.i2c_response.success == 0:
             print("i2c master read/write to slave buffer successful.")
             print("Temperature in C: ", data_inbox.response.i2c_response.temp)
             print("Relative Humidity in %: ", data_inbox.response.i2c_response.rel_hum)
@@ -147,7 +147,7 @@ def main(client, topic):
     return 0
 
 if __name__ == "__main__":
-    broker="mqtt.eclipse.org"
+    broker="test.mosquitto.org"
     port=1883
     ts = datetime.datetime.now().isoformat()
     c = 'client-' + ts[-6:]
