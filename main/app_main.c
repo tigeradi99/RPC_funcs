@@ -492,6 +492,9 @@ void test_i2c_rw_func(void *params)
     struct bme280_dev device;
     int8_t rslt = BME280_OK,rslt2;
     uint8_t dev_addr = BME280_I2C_ADDR_PRIM;
+    uint32_t req_delay;
+    uint8_t settings_sel;
+	struct bme280_data comp_data;
     
     device.intf_ptr = &dev_addr;
     device.intf = BME280_I2C_INTF;
@@ -500,16 +503,12 @@ void test_i2c_rw_func(void *params)
     device.delay_us = delay_ms;//delay function pointer
 
     rslt = bme280_init(&device);
-
-    uint8_t settings_sel;
-	struct bme280_data comp_data;
     
 	/* Recommended mode of operation: Indoor navigation. Refer to https://github.com/BoschSensortec/BME280_driver/tree/master */
 	device.settings.osr_h = BME280_OVERSAMPLING_1X;
 	device.settings.osr_p = BME280_OVERSAMPLING_16X;
 	device.settings.osr_t = BME280_OVERSAMPLING_2X;
 	device.settings.filter = BME280_FILTER_COEFF_16;
-	device.settings.standby_time = BME280_STANDBY_TIME_62_5_MS;
 
 	settings_sel = BME280_OSR_PRESS_SEL;
 	settings_sel |= BME280_OSR_TEMP_SEL;
@@ -519,10 +518,13 @@ void test_i2c_rw_func(void *params)
 
     rslt = bme280_set_sensor_settings(settings_sel, &device);//Apply the above settings to sensor
     printf("BME280 set status: %d \n", rslt);
-	rslt2 = bme280_set_sensor_mode(BME280_NORMAL_MODE, &device);//Set sensor mode to Normal operation mode
+    /*Calculate minimum delay reqd between 2 consecutive measurementsbased upon sensor and oversampling config*/
+    req_delay = bme280_cal_meas_delay(&device.settings);
+	rslt2 = bme280_set_sensor_mode(BME280_FORCED_MODE, &device);//Set sensor mode to FORCED operation mode, i.e take a reading and go back to sleep
     printf("BME280 set sensor mode status: %d \n", rslt2);
     
-    device.delay_us(70, device.intf_ptr);//Wait for 70ms
+    //device.delay_us(70, device.intf_ptr);//Wait for 70ms
+    device.delay_us(req_delay, device.intf_ptr);//wait for a period calculated by above function.
 	rslt2 = bme280_get_sensor_data(BME280_ALL, &comp_data, &device);// Obtain readings from sensor
     printf("BME280 get_data status: %d \n", rslt);
 
