@@ -31,8 +31,8 @@ If you intend to develop/add more functionality; you will require:
   * sudo apt-get install protobuf-compiler (To install Google Protocol Buffer compiler packages)
   * sudo apt-get install protobuf-c-compiler (Unofficial implementation of Protocol Buffers compiler for C)
   * pip install protobuf (Install protocol buffers package for python)
-  * To compile .proto files to C format: navigate to file directory; then run protoc-c --c_out=. <filename>.proto
-  * To compile .proto files to Python format: navigate to file directory; then run protoc --python_out=. <filename>.proto
+  * To compile .proto files to C format: navigate to file directory; then run protoc-c --c_out=. filename.proto
+  * To compile .proto files to Python format: navigate to file directory; then run protoc --python_out=. filename.proto
 
 * MQTT package for python: pip install paho-mqtt
 
