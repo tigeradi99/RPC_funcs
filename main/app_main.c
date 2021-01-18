@@ -554,7 +554,7 @@ int read_sensor(void *clnt, void *request)
     para.client = (esp_mqtt_client_handle_t)clnt;
     para.request_i2c = (Request*)request;
     printf("Creating Task: \n");
-    /* Creating Task to execute sesor read*/
+    /* Creating Task to execute sensor read*/
     xTaskCreate(&test_i2c_rw_func, "R/W SENSOR", 4096, &para, 0, NULL);
     return 0;
 }
@@ -620,7 +620,7 @@ static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             printf("Reached check condition \n");
             if(recvd->message_type_case == X_RPCMESSAGE__MESSAGE_TYPE_REQUEST)
             {         
-                printf("TImestamp: tv_sec : %d | tv_usec: %d \n", recvd->time_stamp->tv_sec, recvd->time_stamp->tv_usec);
+                printf("Timestamp: tv_sec : %d | tv_usec: %d \n", recvd->time_stamp->tv_sec, recvd->time_stamp->tv_usec);
                 printf("message index: %d \n",recvd->request->request_func_case);
                 xRPC_func[recvd->request->request_func_case]((void*)client , (void*)recvd->request);
             }
