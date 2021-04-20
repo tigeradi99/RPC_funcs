@@ -23,18 +23,86 @@ It is recommended to use Python 3.8 or onwards. Remember to set an alternative i
 
 In case you are using UBUNTU 20.04 and above, Python 3.8 will be the default interpreter.
 
-More detailed docs for protocol-buffers, LED Control are provided in the DOCS directory.
+#### Instructions for Ubuntu 20.04 
+Shell script dev in progress. Meanwhile here is a step by step procedure:
+```
+sudo apt update && sudo apt upgrade -y
+```
+```
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+```
+```
+sudo apt install -y python3-pip
+```
+```
+sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+```
+```
+sudo apt install -y git wget flex bison gperf python-setuptools cmake ninja-build ccache libffi-dev libssl-dev dfu-util
+```
+```
+cd ~
+```
+```
+mkdir esp
+```
+```
+cd esp
+```
+Cloning the repository:
+```
+git clone --recursive https://github.com/espressif/esp-idf.git
+```
+```
+cd esp-idf
+```
+Setting up the flashing tools and xtensa compilers:
+```
+. ./install.sh
+```
+```
+pip install --upgrade pip
+```
+```
+. ./export.sh
+```
+```
+nano ~/.profile
+```
+
+Append the next line to `~/.profile` script. This will ensure that idf.py tool is set up each time a new terminal window is opened.
+
+```
+. $HOME/esp/esp-idf/export.sh
+```
+
+To save press CTRL+X, Y, ENTER.
+
+The next step is to add the ttyUSB* port to the dialout group.
+```
+sudo usermod -a -G dialout,tty $USER
+```
+
+Restart the machine. If you are on a virtual machine then shutdown completely and restart it.
+
+```
+ls /dev/ttyUSB*
+```
+More detailed docs for protocol-buffers, LED Control are provided in the DOCS directory in case you want to do additional development work.
 
 ### External Libraries needed:
+
+**Compulsorily needed:**
+* MQTT package for python: pip install paho-mqtt 
+* pip install protobuf (Install protocol buffers package for python)
+
+**(Optional)** 
 If you intend to develop/add more functionality; you will require:
 * Protocol Buffer compiler:
   * sudo apt-get install protobuf-compiler (To install Google Protocol Buffer compiler packages)
   * sudo apt-get install protobuf-c-compiler (Unofficial implementation of Protocol Buffers compiler for C)
-  * pip install protobuf (Install protocol buffers package for python)
   * To compile .proto files to C format: navigate to file directory; then run protoc-c --c_out=. filename.proto
   * To compile .proto files to Python format: navigate to file directory; then run protoc --python_out=. filename.proto
-
-* MQTT package for python: pip install paho-mqtt
 
 
 ## How to use example
@@ -71,7 +139,9 @@ Preferably , use this setting while testing:
 
 If not connected properly, then an I2C timeout error will occur. 
 
-**Note: ** There’s no need to add an external pull-up resistors for SDA/SCL pin, because the driver will enable the internal pull-up resistors by default in our program.
+**Note:** There’s no need to add an external pull-up resistors for SDA/SCL pin, because the driver will enable the internal pull-up resistors by default in our program.
+
+Also, do not hot swap the I2C pins once ESP32 is powered on.
 
 ### Configure the project
 
@@ -79,6 +149,7 @@ If not connected properly, then an I2C timeout error will occur.
 * Configure Wi-Fi or Ethernet under "Example Connection Configuration" menu. Enter the Wifi SSID and password.
 * Configure MQTT connection (if needed) under "Example Configuration" menu. NOte that MQTT broker links should start with mqtt://(URL)
 * Remember to change the mqtt broker url in the client.py program, if you change the broker in the ESP32 configs
+* Change the `Flash Size` setting to 4MB under `Serial Flasher config`, or let it remain at   2MB if errors occir while flashing.
 * When using Make build system, set `Default serial port` under `Serial flasher config`.
 
 ### Build and Flash
@@ -88,6 +159,7 @@ Build the project and flash it to the board, then run monitor tool to view seria
 ```
 idf.py -p PORT flash monitor
 ```
+PORT can be eg: /dev/ttyUSB0
 
 (To exit the serial monitor, type ``Ctrl-]``.)
 

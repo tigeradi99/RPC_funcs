@@ -58,7 +58,8 @@ int driver_installed_stat = 0;
 struct param
 {
     esp_mqtt_client_handle_t client;
-    Request *request_i2c;
+    int sda_pin;
+    int scl_pin;
 }para;
 
 /**
@@ -75,6 +76,7 @@ void i2c_init_master(int sda_gpio, int scl_gpio)
     conf_mas.scl_io_num = scl_gpio;
     conf_mas.scl_pullup_en = GPIO_PULLUP_ENABLE; //ENABLE INTERNAL PULLUP RESISTORS FOR SCL LINE
     conf_mas.master.clk_speed = 100000;
+    conf_mas.clk_flags = I2C_SCLK_SRC_FLAG_FOR_NOMAL;
     i2c_param_config(I2C_MASTER_PORT, &conf_mas);
     i2c_driver_install(I2C_MASTER_PORT, conf_mas.mode, 0, 0, 0);
     
@@ -143,7 +145,7 @@ int8_t i2c_master_reg_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length,
  * --------|---------------------------|--------------------|---------------------|------|
  *
  */
-int8_t i2c_master_reg_write(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr)
+int8_t i2c_master_reg_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, void *intf_ptr)
 {
     int8_t iError;
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
@@ -458,7 +460,7 @@ int ledcontroller_func(void *clnt, void *request)
 void test_i2c_rw_func(void *params)
 {
     esp_mqtt_client_handle_t client = ((struct param*)params)->client;
-    Request *request_i2c = ((struct param*)params)->request_i2c;
+    //Request *request_i2c = ((struct param*)params)->request_i2c;
     XRPCMessage toSend = X_RPCMESSAGE__INIT;
     struct timeval tv;
 
@@ -480,11 +482,16 @@ void test_i2c_rw_func(void *params)
     I2cOperationsResponse i2c_resp;
     toSend.response->i2c_response = &i2c_resp;
     i2c_operations_response__init(toSend.response->i2c_response);
+    printf("driver: %d \n", driver_installed_stat);
+    int sda = ((struct param*)params)->sda_pin;
+    int scl = ((struct param*)params)->scl_pin;
+    printf("sda: %d \n", sda);
+    printf("scl: %d \n", scl);
 
     /*SETTING UP MASTER AT PORT 0*/
     if(driver_installed_stat == 0)
     {
-        i2c_init_master(request_i2c->i2c_request->slave_sda_gpio, request_i2c->i2c_request->slave_scl_gpio);
+        i2c_init_master(sda, scl);
         driver_installed_stat = 1;
     }
  
@@ -552,7 +559,8 @@ int read_sensor(void *clnt, void *request)
 {
     /* Passing values to structure param, which contains the values to be passed to i2c read write task*/
     para.client = (esp_mqtt_client_handle_t)clnt;
-    para.request_i2c = (Request*)request;
+    para.sda_pin = ((Request*)request)->i2c_request->slave_sda_gpio;
+    para.scl_pin = ((Request*)request)->i2c_request->slave_scl_gpio;
     printf("Creating Task: \n");
     /* Creating Task to execute sensor read*/
     xTaskCreate(&test_i2c_rw_func, "R/W SENSOR", 4096, &para, 0, NULL);

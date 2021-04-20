@@ -115,8 +115,11 @@ def rpc_sen(client, topic , procedure):
         #print("Message type:", data_outbox.request)
         #print("Outbox: ", data_outbox)
     if procedure == "i2c_op" :
-        data_outbox.request.i2c_request.slave_sda_gpio = int(input("Enter sensor sda pin: "))
-        data_outbox.request.i2c_request.slave_scl_gpio = int(input("Enter sensor scl pin: "))
+        sda = input("Enter sensor sda pin: ")
+        scl = input("Enter sensor scl pin: ")
+        data_outbox.request.i2c_request.slave_sda_gpio = int(sda)
+        data_outbox.request.i2c_request.slave_scl_gpio = int(scl)
+    print("Outbox: ", data_outbox)
     otb = data_outbox.SerializeToString()
     client.publish(topic,otb,qos=0)
 
