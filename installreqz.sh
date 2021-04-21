@@ -17,7 +17,7 @@ echo "Installed."
 echo "Creating esp directory:"
 mkdir ~/esp
 echo "Switching to ~/esp"
-cd esp
+cd ~/esp
 echo "Cloning:"
 git clone --recursive https://github.com/espressif/esp-idf.git
 echo "ESP-IDF repository cloned. Setting up compiler and other prerequisites:"
@@ -26,4 +26,4 @@ cd esp-idf
 pip install --upgrade pip
 cd ../..
 echo "Completed."
-echo "Please refer to the README for further instructions."
+echo "Please refer to the README.md for further instructions."

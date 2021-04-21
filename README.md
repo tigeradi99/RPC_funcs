@@ -22,55 +22,19 @@ It is recommended to use Python 3.8 or onwards. Remember to set an alternative i
 * Finally, set alternative by running : sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && alias pip=pip3
 
 In case you are using UBUNTU 20.04 and above, Python 3.8 will be the default interpreter.
-
-#### Instructions for Ubuntu 20.04 
-Shell script dev in progress. Meanwhile here is a step by step procedure:
+ 
+#### Instructions for setting up ESP-IDF in Ubuntu 20.04 
+First run the install script (installreqz.sh):
 ```
-sudo apt update && sudo apt upgrade -y
+. ./installreqz.sh
 ```
-```
-sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-```
-```
-sudo apt install -y python3-pip
-```
-```
-sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
-```
-```
-sudo apt install -y git wget flex bison gperf python-setuptools cmake ninja-build ccache libffi-dev libssl-dev dfu-util
-```
-```
-cd ~
-```
-```
-mkdir esp
-```
-```
-cd esp
-```
-Cloning the repository:
-```
-git clone --recursive https://github.com/espressif/esp-idf.git
-```
-```
-cd esp-idf
-```
-Setting up the flashing tools and xtensa compilers:
-```
-. ./install.sh
-```
-```
-pip install --upgrade pip
-```
-```
-. ./export.sh
-```
+Next, we need to run the export.sh script to ~/.profile, so that that idf.py tool is set up each time a new terminal window is opened.
+Open `.profile` using nano.
 ```
 nano ~/.profile
 ```
 
-Append the next line to `~/.profile` script. This will ensure that idf.py tool is set up each time a new terminal window is opened.
+Add the following line to `~/.profile`:
 
 ```
 . $HOME/esp/esp-idf/export.sh
@@ -78,23 +42,34 @@ Append the next line to `~/.profile` script. This will ensure that idf.py tool i
 
 To save press CTRL+X, Y, ENTER.
 
-The next step is to add the ttyUSB* port to the dialout group.
+The next step is to add the ttyUSB* port to the dialout group, so that the USB port can be accessed. 
 ```
 sudo usermod -a -G dialout,tty $USER
 ```
 
 Restart the machine. If you are on a virtual machine then shutdown completely and restart it.
 
+To find out the port where your ESP-32 device is connected, run the following without plugging in the ESP32:
+
 ```
 ls /dev/ttyUSB*
 ```
+Now, plugin your ESP32 and run the above command once again. A new entry `/dev/ttyUSB(some number)` should appear, which indicates the port to which ESP32 is connected.
+
 More detailed docs for protocol-buffers, LED Control are provided in the DOCS directory in case you want to do additional development work.
 
 ### External Libraries needed:
 
 **Compulsorily needed:**
-* MQTT package for python: pip install paho-mqtt 
-* pip install protobuf (Install protocol buffers package for python)
+Before running the Python client in the `python_test_files` directory, the following python libraries are needed.
+* MQTT package for python 
+```
+pip install paho-mqtt
+```
+*Protocol Buffers package for python: (ver. 3.14.0)
+```
+pip install protobuf==3.14.0
+```
 
 **(Optional)** 
 If you intend to develop/add more functionality; you will require:
