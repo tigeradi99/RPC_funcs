@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+message TimeVal {
+	uint32 tv_sec = 1;// store time elapse since Jan 1, 1970 00:00 in seconds
+	uint32 tv_usec = 2; // store time elapse since Jan 1, 1970 00:00 in microseconds
+}
+
+message ledc_channel_config_t{
+    int32 gpio_num = 1;
+    ledc_mode_t speed_mode = 2;
+    ledc_channel_t channel = 3;
+    ledc_intr_type_t intr_type = 4;
+    uint32 duty = 5;
+    int32 hpoint = 6;
+}
+
+message ledc_intr_type_t{
+	enum interrupt_type{
+		LEDC_INTR_DISABLE = 0;
+		LEDC_INTR_FADE_END = 1;
+	}
+	interrupt_type intr = 1;
+}
+
+message ledc_channel_t{
+	int32 channel = 1;
+}
+message ledc_mode_t{
+    enum ledc_mode_e {
+        LEDC_HIGH_SPEED_MODE = 0;
+        LEDC_LOW_SPEED_MODE = 1;
+        LEDC_SPEED_MODE_MAX = 2;
+	}
+	ledc_mode_e ledc_speed = 1;
+}
+
+message i2cOperationsRequest{
+	int32 slave_sda_gpio = 1;
+	int32 slave_scl_gpio = 2;
+}
+
+message i2cOperationsResponse{
+	int32 success = 1;
+	float temp = 2;
+	float rel_hum = 3;
+	float pres = 4;
+}
+
+message SettimeofdayRequest {
+	TimeVal timeval = 1;
+}
+
+message SettimeofdayResponse {
+	sint32 return_value = 1; //stores if function call was succesful or not
+	sint32 errno_alt = 2; //stores error no., if fault occurs
+}
+
+message GettimeofdayRequest {
+    int32 stub = 1;
+}
+
+message GettimeofdayResponse{
+	//planning to scrap timezone completely, as it is obsolete
+	sint32 return_value = 1;//stores if function call was succesful or not
+	sint32 errno_alt = 2;
+	TimeVal timeval = 3;
+}
+message ledc_channel_config_Request{
+	ledc_channel_config_t ledc_conf = 1;
+}
+message ledc_channel_config_Response{
+	int32 config_status = 1;
+}
+
+message Request {
+	oneof RequestFunc {
+		SettimeofdayRequest settimeofday_request = 1;
+		GettimeofdayRequest gettimeofday_request = 2;
+		ledc_channel_config_Request ledc_channel_config_request = 3;
+		i2cOperationsRequest i2c_request = 4;
+	}
+}
+
+message Response {
+	oneof ResponseFunc {
+		SettimeofdayResponse settimeofday_response = 1;
+		GettimeofdayResponse gettimeofday_response = 2;
+		ledc_channel_config_Response ledc_channel_config_response = 3;
+		i2cOperationsResponse i2c_response = 4;
+	}
+}
+
+
+message xRPCMessage {
+	oneof MessageType {
+		Request request   = 1;
+		Response response = 2;
+	}
+	TimeVal time_stamp    = 3;
+
+	// oneof is simlar to the union structure in C
+	// the *_case variable stores the selection of which type
+}
