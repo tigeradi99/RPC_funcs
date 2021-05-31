@@ -66,7 +66,7 @@ Before running the Python client in the `python_test_files` directory, the follo
 ```
 pip install paho-mqtt
 ```
-*Protocol Buffers package for python: (ver. 3.14.0)
+* Protocol Buffers package for python: (ver. 3.14.0)
 ```
 pip install protobuf==3.14.0
 ```
