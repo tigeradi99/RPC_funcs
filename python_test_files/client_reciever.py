@@ -45,11 +45,19 @@ def on_message(client, userdata, message):
         print("Requests are not supported by the subscriber.")
 
 
-def main(client, topic):
-            
+if __name__== "__main__":
+    broker="test.mosquitto.org"
+    port=1883
+    ts = datetime.datetime.now().isoformat()
+    c = 'client-' + ts[-6:]
+    print(c, broker, port)
+    client = paho.Client(c)
+    client.on_message=on_message
+
+    client.connect(broker, port)
+    client.subscribe("+/xRPC_Response") # default: subscribe to all topics in /xRPC_Response
     client.loop_start() #start loop to process received messages
-    
-    
+
     try:
         while True:
            time.sleep(1)
@@ -60,25 +68,7 @@ def main(client, topic):
         print ("You hit control-c")
     
     time.sleep(1)
-    
+    client.disconnect()
     client.loop_stop()
-    return 0
-
-if __name__ == "__main__":
-    broker="test.mosquitto.org"
-    port=1883
-    ts = datetime.datetime.now().isoformat()
-    c = 'client-' + ts[-6:]
-    print(c, broker, port)
-    client= paho.Client(c)
-    client.on_message=on_message
-    print("Enter subscriber topic:")
-    topic = input()
-    client.connect(broker, port)
-    client.subscribe("+/xRPC_Response") # default: subscribe to all topics in /xRPC_Response
-    while True:
-        main(client,topic)
-        inp = input("Do you want to continue? y/n: ")
-        if inp == "n":
-            client.disconnect()
-            break
+    
+    
