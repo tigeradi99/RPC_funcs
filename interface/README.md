@@ -18,7 +18,7 @@ This is an I2C sensor interface which can be used to read BME280 sensor data(tem
 
 6. Finally, call the **deserialize_message()** function, which will extract the temperature, humidity and pressure values from the sensor response message. The function will a tuple in the following format: (temperature, humidity, pressure)
 
-You can refer to the **test.py** script to see an example on how to use this interface.
+You can refer to the [**test.py**](https://github.com/tigeradi99/RPC_funcs/blob/master/interface/test.py) script to see an example on how to use this interface.
 
 ## Dependencies:
 To run this interface, you need:
