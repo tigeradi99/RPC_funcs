@@ -1,4 +1,4 @@
-from interface2 import I2C_Sensor
+from interface import I2C_Sensor
 from reciever import Reciever
 import datetime
 import paho.mqtt.client as paho
@@ -14,8 +14,8 @@ if __name__=="__main__":
     sensor.serialize_data(21,22) #serialize read request
     sensor.send() #send request via MQTT, wait for a response and store it in a queue
     
-    #Extract message from queue and return parameters
-    #temp, hum, pres = sensor.deserialize_message() 
+    Extract message from queue and return parameters
+    temp, hum, pres = sensor.deserialize_message() 
     
-    #print(f'Temperature: {temp}, Pressure: {pres}, Humidity: {hum}') 
+    print(f'Temperature: {temp}, Pressure: {pres}, Humidity: {hum}') 
     client.disconnect()
